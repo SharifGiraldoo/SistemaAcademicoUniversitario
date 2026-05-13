@@ -5,6 +5,7 @@ import { HistorialAcademico } from '../models/HistorialAcademico';
 import { EstadoInscripcion } from '../models/enums/EstadoInscripcion';
 import { InscripcionService } from '../services/InscripcionService';
 import { InscripcionRepository } from '../persistence/InscripcionRepository';
+import * as Constants from '../utils/Constants';
 
 export const useInscripcionController = (
   student: Estudiante, 
@@ -18,6 +19,11 @@ export const useInscripcionController = (
   const enroll = async (subject: Asignatura) => {
     console.log(`Intentando inscripción en: ${subject.name} (${subject.code})`);
     
+    if (!InscripcionService.isPeriodOpen()) {
+      showNotification('error', Constants.OUT_OF_PERIOD_MESSAGE);
+      return;
+    }
+
     // Validar reglas de negocio
     const error = InscripcionService.validate(
       student, 
@@ -56,6 +62,10 @@ export const useInscripcionController = (
   };
 
   const cancel = async (id: string) => {
+    if (!InscripcionService.isPeriodOpen()) {
+      showNotification('error', Constants.OUT_OF_PERIOD_MESSAGE);
+      return;
+    }
     try {
       const success = await InscripcionRepository.delete(id);
       if (success) {
@@ -89,6 +99,10 @@ export const useInscripcionController = (
   };
 
   const reprogramar = async (id: string) => {
+    if (!InscripcionService.isPeriodOpen()) {
+      showNotification('error', Constants.OUT_OF_PERIOD_MESSAGE);
+      return;
+    }
     try {
       const original = enrollments.find(e => e.id === id);
       if (!original) return;

@@ -64,4 +64,10 @@ export class InscripcionService {
 
     return null;
   }
+
+  static isPeriodOpen(): boolean {
+    // Simulamos que el periodo de matrícula está abierto. 
+    // En una app real esto vendría de una configuración del sistema en la DB.
+    return true; 
+  }
 }

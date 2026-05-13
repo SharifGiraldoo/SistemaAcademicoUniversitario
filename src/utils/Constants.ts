@@ -7,3 +7,4 @@ export const RN_007_MESSAGE = "RN-007 VIOLADA: No puedes inscribir materias de s
 export const SCHEDULE_CONFLICT_MESSAGE = "CONFLICTO DE HORARIO: Ya tienes una asignatura en este bloque.";
 export const PREREQUISITE_MESSAGE = "PRERREQUISITO FALTANTE: No has aprobado los requisitos para esta materia.";
 export const ALREADY_APPROVED_MESSAGE = "MATERIA APROBADA: Esta materia ya consta en tu historial como aprobada.";
+export const OUT_OF_PERIOD_MESSAGE = "PERIODO CERRADO: La operación no se puede realizar fuera del periodo de matrícula académica.";

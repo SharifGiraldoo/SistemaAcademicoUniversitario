@@ -25,3 +25,29 @@ TEO-GRA,TEO-GRA,Teoría de Grafos,3,5,30,0,Miércoles 2-4 PM,MAT-DIS
 EST-DAT,EST-DAT,Estructura de Datos,3,5,25,0,Jueves 2-4 PM,PRO-III
 SOF-I,SOF-I,Ingeniería de Software I,3,5,30,0,Viernes 2-4 PM,PRO-III
 INF-COM-II,INF-COM-II,Infraestructura Computacional II,4,5,20,0,Sábado 8-12 AM,INF-COM
+DIR-EST,DIR-EST,Dirección Estratégica de TI,4,6,30,0,Lunes 4-6 PM,
+ANA-NUM,ANA-NUM,Análisis Numérico,3,6,30,0,Martes 4-6 PM,CAL-MUL
+BAS-DAT-I,BAS-DAT-I,Bases de Datos I,3,6,30,0,Miércoles 4-6 PM,EST-DAT
+PRO-AVAN,PRO-AVAN,Programación Avanzada,3,6,25,0,Jueves 4-6 PM,EST-DAT
+SOF-II,SOF-II,Ingeniería de Software II,3,6,30,0,Viernes 4-6 PM,SOF-I
+INF-COM-III,INF-COM-III,Infraestructura Computacional III,4,6,20,0,Sábado 10-12 AM,INF-COM-II
+ING-ECO,ING-ECO,Ingeniería Económica,3,7,30,0,Lunes 6-8 PM,
+FUN-HCI,FUN-HCI,Fundamentos de HCI,3,7,30,0,Martes 6-8 PM,
+SEM-INV,SEM-INV,Seminario de Investigación,3,7,25,0,Miércoles 6-8 PM,
+BAS-DAT-II,BAS-DAT-II,Bases de Datos II,3,7,30,0,Jueves 6-8 PM,BAS-DAT-I
+SOF-III,SOF-III,Ingeniería de Software III,3,7,30,0,Viernes 6-8 PM,SOF-II
+ADM-INF,ADM-INF,Administración de Infraestructura de TI,3,7,20,0,Sábado 2-4 PM,INF-COM-III
+FOR-PROY,FOR-PROY,Formulación y Evaluación de Proyectos,4,8,30,0,Lunes 8-10 AM,
+TEO-LEN,TEO-LEN,Teoría de Lenguajes Formales,3,8,30,0,Martes 10-12 AM,
+ANA-ALG,ANA-ALG,Análisis de Algoritmos,3,8,25,0,Miércoles 2-4 PM,EST-DAT
+PRO-I-OPT,PRO-I-OPT,Profundización I,3,8,20,0,Jueves 4-6 PM,
+PRO-II-OPT,PRO-II-OPT,Profundización II,3,8,20,0,Viernes 8-10 AM,
+SEM-ING,SEM-ING,Seminario de Ingeniería,2,8,40,0,Sábado 10-12 AM,
+ADM-PROY,ADM-PROY,Administración de Proyectos,4,9,30,0,Lunes 2-4 PM,
+INT-ART,INT-ART,Inteligencia Artificial,3,9,20,0,Martes 4-6 PM,TEO-GRA
+LEG-LAB,LEG-LAB,Legislación Laboral,2,9,40,0,Miércoles 8-10 AM,
+PRO-III-OPT,PRO-III-OPT,Profundización III,3,9,20,0,Jueves 10-12 AM,
+PRO-IV-OPT,PRO-IV-OPT,Profundización IV,3,9,20,0,Viernes 2-4 PM,
+ADM-GEN,ADM-GEN,Administración,2,9,30,0,Sábado 8-10 AM,
+TRAB-GRA,TRAB-GRA,Trabajo de Grado,6,10,20,0,Lunes 8-12 AM,
+ETI-PRO,ETI-PRO,Ética Profesional,2,10,50,0,Martes 10-12 AM,

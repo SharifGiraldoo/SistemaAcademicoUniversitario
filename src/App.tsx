@@ -169,20 +169,25 @@ const CurriculumView = ({ subjects, allHistory, student }: CurriculumViewProps) 
   const myHistory = allHistory.filter(h => h.studentId === student.id);
 
   return (
-    <div className="space-y-12">
-      <header className="relative">
+    <div className="space-y-12 animate-in fade-in duration-1000 overflow-x-auto pb-12">
+      <header className="relative mb-12">
         <h2 className="text-4xl font-black tracking-tight text-slate-900 border-l-8 border-emerald-500 pl-6 uppercase italic">Plan de Estudios Oficial</h2>
-        <p className="text-slate-500 font-bold ml-6 mt-1">Programa de Ingeniería de Sistemas y Computación</p>
+        <p className="text-slate-500 font-bold ml-6 mt-1 uppercase tracking-widest text-xs">Programa de Ingeniería de Sistemas y Computación • Año 2026</p>
+        <div className="flex gap-4 mt-6 ml-6">
+           <div className="flex items-center gap-2"><div className="w-4 h-4 bg-emerald-500 rounded shadow-sm"></div><span className="text-[10px] font-black uppercase text-slate-400">Aprobadas</span></div>
+           <div className="flex items-center gap-2"><div className="w-4 h-4 bg-white border-2 border-emerald-200 rounded shadow-sm"></div><span className="text-[10px] font-black uppercase text-slate-400">Habilitadas</span></div>
+           <div className="flex items-center gap-2"><div className="w-4 h-4 bg-slate-100 rounded shadow-sm opacity-50"></div><span className="text-[10px] font-black uppercase text-slate-400">Bloqueadas</span></div>
+        </div>
       </header>
 
-      <div className="flex flex-col gap-12">
+      <div className="min-w-[1600px] inline-flex gap-1 bg-slate-100/30 p-1 rounded-[2rem]">
         {semesters.map(sem => (
-          <div key={sem} className="space-y-6">
-            <h3 className="text-xl font-black text-emerald-600 uppercase tracking-[0.3em] flex items-center gap-4">
-              <span className="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-black">S{sem}</span>
-              Semestre {sem}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div key={sem} className="w-[160px] flex flex-col gap-2">
+            <div className={`p-4 text-center rounded-2xl mb-2 flex flex-col items-center justify-center transition-all ${student.semester === sem ? 'bg-emerald-600 text-white shadow-xl scale-105' : 'bg-slate-900 text-slate-400'}`}>
+               <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">Semestre</span>
+               <span className="text-2xl font-black italic">{sem}</span>
+            </div>
+            <div className="space-y-2">
               {subjects.filter(s => s.semester === sem).map(s => {
                 const isPassed = myHistory.some(h => h.subjectCode === s.code && h.status === EstadoInscripcion.COMPLETED);
                 const isMissingPrereq = s.prerequisites.some(p => !myHistory.some(h => h.subjectCode === p && h.status === EstadoInscripcion.COMPLETED));
@@ -190,31 +195,36 @@ const CurriculumView = ({ subjects, allHistory, student }: CurriculumViewProps) 
                 return (
                   <div 
                     key={s.code} 
-                    className={`p-5 rounded-2xl border-2 transition-all group ${isPassed ? 'bg-emerald-50 border-emerald-500 shadow-lg shadow-emerald-500/10' : isMissingPrereq ? 'bg-white border-slate-100 opacity-60' : 'bg-white border-white shadow-xl hover:border-emerald-200'}`}
+                    className={`p-3 rounded-xl border-2 transition-all group min-h-[140px] flex flex-col justify-between relative ${
+                      isPassed ? 'bg-emerald-500 text-white border-emerald-600 shadow-lg' : 
+                      isMissingPrereq ? 'bg-slate-50 border-slate-100 opacity-40grayscale' : 
+                      'bg-white border-white shadow-md hover:border-emerald-300 hover:-translate-y-1'
+                    }`}
                   >
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-[9px] font-black font-mono text-emerald-500 px-2 py-0.5 bg-emerald-50 rounded uppercase tracking-tighter">{s.code}</span>
-                      {isPassed && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                    <div className="relative z-10">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className={`text-[8px] font-black font-mono px-1.5 py-0.5 rounded uppercase tracking-tighter ${isPassed ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'}`}>
+                          {s.code}
+                        </span>
+                        {isPassed && <CheckCircle2 className="w-3 h-3 text-white" />}
+                      </div>
+                      <h4 className={`font-black text-[11px] uppercase italic leading-tight mb-2 ${isPassed ? 'text-white' : 'text-slate-800'}`}>
+                        {s.name}
+                      </h4>
                     </div>
-                    <h4 className={`font-black text-sm uppercase italic leading-tight mb-3 ${isPassed ? 'text-emerald-700' : 'text-slate-800'}`}>{s.name}</h4>
-                    <div className="space-y-2">
-                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{s.credits} Créditos</p>
-                       {s.prerequisites.length > 0 && (
-                          <div className="pt-2 border-t border-slate-100">
-                             <p className="text-[8px] text-slate-400 font-black uppercase mb-1">Prerrequisitos:</p>
-                             <div className="flex flex-wrap gap-1">
-                                {s.prerequisites.map(p => {
-                                   const preSub = subjects.find(sub => sub.code === p);
-                                   const prePassed = myHistory.some(h => h.subjectCode === p && h.status === EstadoInscripcion.COMPLETED);
-                                   return (
-                                     <span key={p} className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${prePassed ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
-                                        {preSub?.name || p}
-                                     </span>
-                                   );
-                                })}
-                             </div>
-                          </div>
-                       )}
+                    <div className="relative z-10 flex flex-col gap-1">
+                      <div className="flex justify-between items-center">
+                        <span className={`text-[8px] font-bold uppercase ${isPassed ? 'text-emerald-100' : 'text-slate-400'}`}>
+                          {s.credits} Credits
+                        </span>
+                      </div>
+                      {s.prerequisites.length > 0 && !isPassed && (
+                        <div className="flex flex-wrap gap-0.5 mt-1 border-t border-slate-100 pt-1">
+                           {s.prerequisites.map(p => (
+                             <div key={p} className="w-1.5 h-1.5 rounded-full bg-rose-400" title={`P: ${p}`} />
+                           ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -862,7 +872,7 @@ const Dashboard = ({ student, enrollments, subjects, allHistory, setActiveTab }:
             <h2 className="text-4xl font-black tracking-tight text-slate-900">
               Bienvenido, <span className="text-emerald-600">{student.name.split(' ')[0]}</span>
             </h2>
-            <p className="text-slate-500 font-medium mt-1">Gestión Académica Uniquindio v2.0</p>
+            <p className="text-slate-500 font-bold mt-1">Gestión Académica Uniquindio v2.0 • Semestre {student.semester}</p>
           </div>
         </div>
         <div className="text-right flex flex-col items-end gap-2 relative z-10">
@@ -953,7 +963,70 @@ interface ScheduleViewProps {
 }
 
 const ScheduleView = ({ student, enrollments, subjects }: ScheduleViewProps) => {
-  // ... (keep existing)
+  const myEnrollments = enrollments.filter(e => e.studentId === student.id && e.status === EstadoInscripcion.ENROLLED);
+  const mySubjects = myEnrollments.map(e => subjects.find(s => s.code === e.subjectCode)).filter(Boolean) as Asignatura[];
+
+  const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const hours = ['8-10', '10-12', '2-4', '4-6', '6-8'];
+
+  const getSubjectAt = (day: string, hour: string) => {
+    return mySubjects.find(s => s.schedule.toLowerCase().includes(day.toLowerCase()) && s.schedule.includes(hour));
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <header className="relative">
+        <h2 className="text-4xl font-black tracking-tight text-slate-900 border-l-8 border-emerald-500 pl-6 uppercase italic">Mi Horario Semanal</h2>
+        <p className="text-slate-500 font-bold ml-6 mt-1">Organización Académica • Semestre {student.semester}</p>
+      </header>
+
+      <div className="overflow-x-auto pb-8">
+        <div className="min-w-[1000px]">
+          <div className="grid grid-cols-7 gap-4">
+            <div className="bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-center p-4">
+              <Clock className="w-6 h-6 text-slate-300" />
+            </div>
+            {days.map(day => (
+              <div key={day} className="text-center py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest italic">{day}</div>
+            ))}
+
+            {hours.map(hour => (
+              <React.Fragment key={hour}>
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-100/50 rounded-2xl font-black text-[10px] text-slate-400 uppercase tracking-tighter">
+                  <span>{hour}</span>
+                  <span>{hour.includes('8') || hour.includes('10') ? 'AM' : 'PM'}</span>
+                </div>
+                {days.map(day => {
+                  const sub = getSubjectAt(day, hour);
+                  return (
+                    <div key={`${day}-${hour}`} className={`min-h-[140px] rounded-2xl border-2 transition-all p-4 flex flex-col justify-between group relative overflow-hidden ${sub ? 'bg-emerald-50 border-emerald-200 shadow-xl shadow-emerald-500/10' : 'bg-white/30 border-dashed border-slate-100'}`}>
+                      {sub ? (
+                        <>
+                          <div className="absolute top-0 right-0 w-16 h-16 green-gradient opacity-10 rounded-full translate-x-8 -translate-y-8" />
+                          <div className="relative z-10">
+                            <p className="text-[9px] font-black text-emerald-600 uppercase mb-2 bg-emerald-100/50 w-fit px-2 py-0.5 rounded-lg">{sub.code}</p>
+                            <h4 className="font-black text-[12px] text-slate-800 uppercase leading-tight italic group-hover:text-emerald-700 transition-colors">{sub.name}</h4>
+                          </div>
+                          <div className="flex items-center gap-2 relative z-10">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,1)]" />
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter italic">Salón Presencial</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                           <Plus className="w-5 h-5 text-slate-200" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 interface AdminSupportViewProps {
@@ -1370,7 +1443,7 @@ export default function App() {
                      <header className="flex justify-between items-end mb-8 relative">
                         <div>
                           <h2 className="text-4xl font-black tracking-tight text-slate-900 border-l-8 border-emerald-500 pl-6 uppercase italic">Oferta Académica</h2>
-                          <p className="text-slate-500 font-bold ml-6 mt-1">Nuevos Espacios para el Semestre {student.semester + 1}</p>
+                          <p className="text-slate-500 font-bold ml-6 mt-1">Nuevos Espacios para el Semestre {student.semester}</p>
                         </div>
                         <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md px-6 py-3 rounded-2xl border-2 border-emerald-500 shadow-xl">
                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cupos de Crédito:</span>
@@ -1402,7 +1475,7 @@ export default function App() {
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                        {subjects.filter(s => 
                          (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.code.toLowerCase().includes(searchTerm.toLowerCase())) && 
-                         (semesterSearch === '' ? s.semester <= (student.role === 'admin' ? 10 : student.semester) : s.semester.toString() === semesterSearch)
+                         (semesterSearch === '' ? (student.role === 'admin' ? true : s.semester === student.semester) : s.semester.toString() === semesterSearch)
                        ).map((s, idx) => (
                          <Card key={s.code} delay={idx * 0.05} className="p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-500 relative overflow-hidden bg-white/90">
                             <div className="absolute top-0 right-0 w-24 h-24 green-gradient opacity-10 rounded-full translate-x-12 -translate-y-12 blur-2xl group-hover:scale-150 transition-transform" />
