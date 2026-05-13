@@ -32,7 +32,12 @@ export class InscripcionService {
 
     // Ya aprobada
     if (historial.some(h => h.subjectCode === asignatura.code && h.status === EstadoInscripcion.COMPLETED)) {
-      return "Asignatura ya aprobada anteriormente.";
+      return Constants.ALREADY_APPROVED_MESSAGE;
+    }
+
+    // RN-007: Semestre superior (No más de 2 semestres adelante del actual)
+    if (estudiante.semester && asignatura.semester > estudiante.semester + 1) {
+       return Constants.RN_007_MESSAGE;
     }
 
     // Prerrequisitos

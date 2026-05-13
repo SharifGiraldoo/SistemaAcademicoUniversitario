@@ -1,0 +1,21 @@
+id,code,name,credits,semester,capacity,enrolledCount,schedule,prerequisites
+ALG-101,ALG-101,Álgebra Lineal,4,1,30,10,Lunes 8-10 AM,
+CAL-101,CAL-101,Cálculo Diferencial,4,1,30,15,Martes 10-12 AM,
+PRO-101,PRO-101,Fundamentos de Programación,4,1,25,20,Miércoles 8-10 AM,
+CAL-201,CAL-201,Cálculo Integral,4,2,30,12,Jueves 10-12 AM,CAL-101
+PRO-201,PRO-201,Programación Orientada a Objetos,4,2,25,18,Viernes 8-10 AM,PRO-101
+EST-201,EST-201,Estadística I,3,2,30,22,Lunes 10-12 AM,ALG-101
+EST-301,EST-301,Estadística II,3,3,25,0,Martes 2-4 PM,EST-201
+FIS-101,FIS-101,Física Mecánica,4,1,30,10,Miércoles 2-4 PM,
+FIS-201,FIS-201,Física Eléctrica,4,2,30,5,Jueves 2-4 PM,FIS-101
+SOP-101,SOP-101,Sistemas Operativos,4,3,25,0,Viernes 2-4 PM,PRO-201
+BAS-101,BAS-101,Bases de Datos I,4,3,25,0,Lunes 4-6 PM,PRO-201
+RED-101,RED-101,Redes de Computadores,4,4,20,0,Martes 4-6 PM,SOP-101
+ING-101,ING-101,Ingeniería de Software I,4,4,20,0,Miércoles 4-6 PM,PRO-201
+IA-101,IA-101,Inteligencia Artificial,4,5,15,0,Jueves 4-6 PM,PRO-201;EST-301
+WEB-101,WEB-101,Desarrollo Web,4,3,25,0,Viernes 10-12 AM,PRO-201
+ARK-101,ARK-101,Arquitectura de Datos,4,5,20,0,Lunes 8-10 AM,BAS-101
+SEG-101,SEG-101,Seguridad Informática,4,4,20,0,Martes 8-10 AM,RED-101
+PRO-401,PRO-401,Proyecto Integrador I,6,4,15,0,Miércoles 8-10 AM,ING-101
+HUM-101,HUM-101,Ética y Sociedad,2,1,40,35,Sábado 8-10 AM,
+CON-101,CON-101,Constitución Política,2,1,40,38,Sábado 10-12 AM,

@@ -1,0 +1,3 @@
+id,studentId,title,content,type,date,read
+NOT-001,ALL,Proceso de MatrículaAbierto,Ya puedes inscribir tus materias para el proximo semestre,INFO,2024-05-13T08:00:00Z,false
+NOT-002,STU-101,Calificación Publicada,Se ha publicado la nota final de Cálculo Diferencial,GRADE,2024-05-13T09:30:00Z,false

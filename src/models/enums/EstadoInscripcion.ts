@@ -1,0 +1,7 @@
+export enum EstadoInscripcion {
+  PENDING = 'PENDIENTE',
+  ENROLLED = 'INSCRITO',
+  COMPLETED = 'APROBADO',
+  FAILED = 'REPROBADO',
+  REPROGRAMADA = 'REPROGRAMADA'
+}

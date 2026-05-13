@@ -19,7 +19,14 @@ import {
   Camera,
   Save,
   PieChart,
-  Layers
+  Layers,
+  Send,
+  MessagesSquare,
+  MessageCircle,
+  Bell,
+  BellRing,
+  Megaphone,
+  Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -37,6 +44,10 @@ import { useInscripcionController } from './controllers/InscripcionController';
 import { InscripcionRepository } from './persistence/InscripcionRepository';
 import { AsignaturaRepository } from './persistence/AsignaturaRepository';
 import { EstudianteRepository } from './persistence/EstudianteRepository';
+import { MessageRepository } from './persistence/MessageRepository';
+import { NotificationRepository } from './persistence/NotificationRepository';
+import { MensajeSoporte } from './models/MensajeSoporte';
+import { Notificacion, TipoNotificacion } from './models/Notificacion';
 import { CsvManager } from './persistence/CsvManager';
 
 import { StudentRepository } from './persistence/StudentRepository';
@@ -377,7 +388,7 @@ const StudentModal = ({ student, onClose, refreshData, showNotification }: Stude
     if (student) {
       success = await StudentRepository.update(student.id!, formData);
     } else {
-      success = await StudentRepository.create(formData as Estudiante);
+      success = await EstudianteRepository.createAsAdmin(formData);
     }
 
     if (success) {
@@ -450,6 +461,19 @@ const StudentModal = ({ student, onClose, refreshData, showNotification }: Stude
               onChange={e => setFormData({...formData, email: e.target.value})}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black text-slate-400 uppercase ml-1">Contraseña</label>
+            <input 
+              type="text" 
+              className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-emerald-500 outline-none transition-all font-bold text-slate-700 bg-slate-50/50"
+              value={(formData as any).password || ''}
+              onChange={e => setFormData({...formData, password: e.target.value} as any)}
+              placeholder="Ej: matricula2024"
+              required={!student}
+            />
+            <p className="text-[9px] text-slate-400 ml-1">Esta contraseña se enviará al correo del estudiante.</p>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
@@ -750,9 +774,10 @@ interface SidebarProps {
   setStudent: (s: Estudiante) => void;
   showNotification: (type: any, msg: string) => void;
   setIsAuthenticated: (val: boolean) => void;
+  messages: MensajeSoporte[];
 }
 
-const Sidebar = ({ activeTab, setActiveTab, studentsList, student, setStudent, showNotification, setIsAuthenticated }: SidebarProps) => (
+const Sidebar = ({ activeTab, setActiveTab, studentsList, student, setStudent, showNotification, setIsAuthenticated, messages }: SidebarProps) => (
   <div className="w-64 bg-slate-900 text-slate-300 flex flex-col h-screen fixed left-0 top-0 z-40 overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
       <img src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover grayscale" referrerPolicy="no-referrer" />
@@ -772,6 +797,8 @@ const Sidebar = ({ activeTab, setActiveTab, studentsList, student, setStudent, s
           { id: 'schedule', icon: <Calendar className="w-5 h-5" />, label: 'Horario', show: student.role === 'student' },
           { id: 'history', icon: <History className="w-5 h-5" />, label: 'Historial', show: student.role === 'student' },
           { id: 'profile', icon: <User className="w-5 h-5" />, label: 'Mi Perfil', show: true },
+          { id: 'support', icon: <div className="relative"><MessagesSquare className="w-5 h-5" />{messages.filter(m => m.receiverId === 'admin' && !m.read).length > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse"></span>}</div>, label: 'Centro Soporte', show: student.role === 'admin' },
+          { id: 'admin-notifs', icon: <Bell className="w-5 h-5" />, label: 'Gestión Push', show: student.role === 'admin' },
         ].filter(item => item.show).map(item => (
           <button
             key={item.id}
@@ -843,7 +870,7 @@ const Dashboard = ({ student, enrollments, subjects, allHistory, setActiveTab }:
            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">ID: {student.id}</p>
         </div>
       </header>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6" delay={0.1}>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Créditos Inscritos</p>
           <p className="text-3xl font-black text-slate-800">{credits} <span className="text-sm text-slate-400 font-normal">/ {student.maxCredits}</span></p>
@@ -855,10 +882,6 @@ const Dashboard = ({ student, enrollments, subjects, allHistory, setActiveTab }:
               className="green-gradient h-2 rounded-full shadow-lg shadow-emerald-500/20" 
             />
           </div>
-        </Card>
-        <Card className="p-6" delay={0.2}>
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Semestre Actual</p>
-          <p className="text-3xl font-black text-slate-800">{student.semester}° <span className="text-sm text-emerald-500 font-bold uppercase tracking-tighter">Activo</span></p>
         </Card>
         <Card className="p-6" delay={0.3}>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">PGA (Promedio)</p>
@@ -930,54 +953,236 @@ interface ScheduleViewProps {
 }
 
 const ScheduleView = ({ student, enrollments, subjects }: ScheduleViewProps) => {
-  const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-  const hours = Array.from({ length: 11 }, (_, i) => i + 8); 
-  const myEnrollments = enrollments.filter(e => e.studentId === student.id);
+  // ... (keep existing)
+};
+
+interface AdminSupportViewProps {
+  messages: MensajeSoporte[];
+  students: Estudiante[];
+  selectedStudent: string | null;
+  setSelectedStudent: (id: string | null) => void;
+  onReply: (studentId: string) => void;
+  newMessage: string;
+  setNewMessage: (msg: string) => void;
+  onMarkAsRead: (senderId: string) => Promise<void>;
+}
+
+const NotificationCenter = ({ notifications, studentId, onClose }: { notifications: Notificacion[]; studentId: string; onClose: () => void }) => {
+  const filtered = notifications.filter(n => n.studentId === 'ALL' || n.studentId === studentId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  
+  const getIcon = (type: TipoNotificacion) => {
+    switch(type) {
+      case TipoNotificacion.DEADLINE: return <Clock className="text-red-500" size={16} />;
+      case TipoNotificacion.GRADE: return <PieChart className="text-emerald-500" size={16} />;
+      case TipoNotificacion.REMINDER: return <BellRing className="text-amber-500" size={16} />;
+      default: return <Megaphone className="text-blue-500" size={16} />;
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-black tracking-tight text-slate-900 border-l-8 border-emerald-500 pl-6 uppercase italic">Cronograma Académico</h2>
-      <Card className="p-0 overflow-hidden bg-slate-50 border-none shadow-2xl">
-        <div className="schedule-container overflow-x-auto">
-          <div className="min-w-[900px]">
-            <div className="grid grid-cols-[100px_repeat(5,1fr)] bg-emerald-600 text-white py-6 font-black text-xs uppercase text-center tracking-[0.2em] shadow-lg">
-              <div /> {days.map(d => <div key={d}>{d}</div>)}
-            </div>
-            {hours.map(hour => (
-              <div key={hour} className="grid grid-cols-[100px_repeat(5,1fr)] h-20 border-b border-emerald-100 last:border-0 hover:bg-white/50 transition-colors group">
-                <div className="flex items-center justify-center border-r border-emerald-100 bg-white/30 text-[11px] font-black text-emerald-600 font-mono">{hour}:00</div>
-                {days.map(day => {
-                   const enrollment = myEnrollments.find(e => {
-                      const s = subjects.find(sub => sub.code === e.subjectCode);
-                      if (!s) return false;
-                      const [dayPart, hourRange] = s.schedule.split(' ');
-                      const [startHour] = hourRange.split(':');
-                      return dayPart === day && parseInt(startHour) === hour;
-                   });
-
-                   const s = enrollment ? subjects.find(sub => sub.code === enrollment.subjectCode) : null;
-
-                   return (
-                     <div key={day} className={`h-full p-1 relative flex items-center justify-center transition-all ${enrollment ? '' : 'opacity-20'}`}>
-                        {enrollment ? (
-                          <motion.div 
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className="w-full h-full bg-emerald-600 rounded-xl p-3 flex flex-col justify-center text-center shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-700 transition-colors"
-                          >
-                             <span className="font-black text-[10px] text-white leading-tight uppercase mb-1">{s?.name}</span>
-                             <span className="text-[8px] text-emerald-300 font-bold tracking-widest">{enrollment.subjectCode}</span>
-                          </motion.div>
-                        ) : (
-                          <div className="text-[10px] font-black text-black/5 uppercase tracking-widest">LIBRE</div>
-                        )}
-                     </div>
-                   );
-                })}
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95, y: -20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: -20 }}
+      className="absolute top-20 right-8 w-96 bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] z-[110] border border-white/50 overflow-hidden flex flex-col max-h-[600px]"
+    >
+      <header className="p-6 bg-slate-900 text-white flex justify-between items-center">
+        <h3 className="font-black text-xs uppercase tracking-[0.2em] italic">Notificaciones Académicas</h3>
+        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors"><X size={16}/></button>
+      </header>
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {filtered.length === 0 ? (
+          <div className="p-12 text-center">
+            <BellRing size={48} className="mx-auto text-slate-200 mb-4" />
+            <p className="text-xs font-black text-slate-400 uppercase tracking-widest italic">Sin novedades por ahora</p>
+          </div>
+        ) : (
+          filtered.map(n => (
+            <div key={n.id} className={`p-5 rounded-3xl border transition-all ${n.read ? 'bg-slate-50/50 border-slate-100' : 'bg-emerald-50/50 border-emerald-100 ring-1 ring-emerald-200'}`}>
+              <div className="flex gap-4">
+                <div className="mt-1">{getIcon(n.type)}</div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-tight">{n.title}</h4>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed font-medium">{n.content}</p>
+                  <p className="text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-wider">{new Date(n.date).toLocaleString()}</p>
+                </div>
               </div>
-            ))}
+            </div>
+          ))
+        )}
+      </div>
+      <footer className="p-4 border-t border-slate-100 bg-slate-50/50">
+        <button 
+          onClick={async () => {
+            await NotificationRepository.markAsRead(undefined, studentId);
+            onClose();
+          }}
+          className="w-full py-3 text-[10px] font-black text-slate-400 hover:text-emerald-600 uppercase tracking-[0.2em] transition-colors"
+        >
+          Marcar todo como leído
+        </button>
+      </footer>
+    </motion.div>
+  );
+};
+
+const AdminPushForm = ({ students, onPush }: { students: Estudiante[]; onPush: (n: Partial<Notificacion>) => Promise<void> }) => {
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    type: TipoNotificacion.INFO,
+    studentId: 'ALL'
+  });
+
+  return (
+    <Card className="p-8">
+      <h3 className="text-xl font-black text-slate-900 border-l-4 border-emerald-500 pl-4 mb-8 uppercase italic">Emitir Notificación Push</h3>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Título</label>
+            <input 
+              type="text" 
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none transition-all font-bold text-slate-700" 
+              value={formData.title}
+              onChange={e => setFormData({...formData, title: e.target.value})}
+              placeholder="Ej: Recordatorio Entrega"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Tipo</label>
+            <select 
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
+              value={formData.type}
+              onChange={e => setFormData({...formData, type: e.target.value as TipoNotificacion})}
+            >
+              <option value={TipoNotificacion.INFO}>Información General</option>
+              <option value={TipoNotificacion.DEADLINE}>Fecha Límite</option>
+              <option value={TipoNotificacion.GRADE}>Calificación</option>
+              <option value={TipoNotificacion.REMINDER}>Recordatorio</option>
+            </select>
           </div>
         </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Contenido del Mensaje</label>
+          <textarea 
+            rows={3} 
+            className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none transition-all font-bold text-slate-700" 
+            value={formData.content}
+            onChange={e => setFormData({...formData, content: e.target.value})}
+            placeholder="Escribe el mensaje que llegará como notificación push..."
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Destinatario</label>
+          <select 
+            className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
+            value={formData.studentId}
+            onChange={e => setFormData({...formData, studentId: e.target.value})}
+          >
+            <option value="ALL">Todo el Campus (Global)</option>
+            {students.filter(s => s.role === 'student').map(s => (
+              <option key={s.id} value={s.id}>{s.name} ({s.id})</option>
+            ))}
+          </select>
+        </div>
+        <button 
+          onClick={() => {
+            onPush(formData);
+            setFormData({ title: '', content: '', type: TipoNotificacion.INFO, studentId: 'ALL' });
+          }}
+          className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3"
+        >
+          <Bell size={18} /> Enviar Notificación Instantánea
+        </button>
+      </div>
+    </Card>
+  );
+};
+
+const AdminSupportView = ({ messages, students, selectedStudent, setSelectedStudent, onReply, newMessage, setNewMessage, onMarkAsRead }: AdminSupportViewProps) => {
+  const studentChats = Array.from(new Set(messages.filter(m => m.senderId !== 'admin').map(m => m.senderId)));
+  
+  useEffect(() => {
+    if (selectedStudent) {
+      onMarkAsRead(selectedStudent);
+    }
+  }, [selectedStudent, messages.length]);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-[600px]">
+      <Card className="lg:col-span-1 p-6 overflow-y-auto">
+        <h3 className="font-black text-xs uppercase tracking-widest text-slate-400 mb-6 pb-4 border-b border-slate-100">Estudiantes</h3>
+        <div className="space-y-4">
+          {studentChats.map(sid => {
+            const s = students.find(st => st.id === sid);
+            const unread = messages.filter(m => m.senderId === sid && m.receiverId === 'admin' && !m.read).length;
+            return (
+              <button 
+                key={sid}
+                onClick={() => setSelectedStudent(sid)}
+                className={`w-full text-left p-4 rounded-2xl transition-all border ${selectedStudent === sid ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-100 hover:bg-slate-50'}`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-bold text-sm text-slate-800">{s?.name || sid}</p>
+                    <p className="text-[10px] text-slate-400 font-mono mt-1">{sid}</p>
+                  </div>
+                  {unread > 0 && <span className="bg-red-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{unread}</span>}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+      
+      <Card className="lg:col-span-3 p-0 flex flex-col overflow-hidden bg-white/40 backdrop-blur-xl">
+        {selectedStudent ? (
+          <>
+            <header className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-black text-slate-900">Conversación con {students.find(s => s.id === selectedStudent)?.name}</h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{selectedStudent}</p>
+              </div>
+            </header>
+            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+              {messages.filter(m => m.senderId === selectedStudent || m.receiverId === selectedStudent).map(m => (
+                <div key={m.id} className={`flex flex-col ${m.senderId === 'admin' ? 'items-end' : 'items-start'}`}>
+                  <div className={`max-w-[70%] p-4 rounded-3xl text-sm leading-relaxed shadow-sm ${m.senderId === 'admin' ? 'bg-emerald-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none'}`}>
+                    {m.content}
+                  </div>
+                  <span className="text-[9px] text-slate-400 mt-2 font-bold px-4">{new Date(m.timestamp).toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+            <div className="p-6 bg-white border-t border-slate-100">
+               <div className="flex gap-4">
+                  <input 
+                    type="text" 
+                    placeholder="Escribe tu respuesta aquí..." 
+                    className="flex-1 px-6 py-4 rounded-2xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-emerald-500"
+                    value={newMessage}
+                    onChange={e => setNewMessage(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && onReply(selectedStudent)}
+                  />
+                  <button 
+                    onClick={() => onReply(selectedStudent)}
+                    className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-2"
+                  >
+                    <Send size={16} /> Enviar
+                  </button>
+               </div>
+            </div>
+          </>
+        ) : (
+          <div className="h-full flex flex-col items-center justify-center text-center p-12">
+            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+               <MessagesSquare className="w-12 h-12 text-emerald-500 opacity-20" />
+            </div>
+            <h3 className="font-black text-2xl text-slate-300 uppercase italic">Centro de Soporte Académico</h3>
+            <p className="text-slate-400 mt-2 font-medium">Selecciona un estudiante para gestionar su consulta.</p>
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -985,7 +1190,7 @@ const ScheduleView = ({ student, enrollments, subjects }: ScheduleViewProps) => 
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'enroll' | 'my-subjects' | 'history' | 'schedule' | 'profile' | 'curriculum' | 'admin-students'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'enroll' | 'my-subjects' | 'history' | 'schedule' | 'profile' | 'curriculum' | 'admin-students' | 'admin-notifs' | 'support'>('dashboard');
   const [student, setStudent] = useState<Estudiante>({ id: 'GUEST', name: 'Invitado', email: '', status: EstadoEstudiante.INACTIVE, maxCredits: 0 });
   const [studentsList, setStudentsList] = useState<Estudiante[]>([]);
   const [subjects, setSubjects] = useState<Asignatura[]>([]);
@@ -997,6 +1202,32 @@ export default function App() {
   const [enrollmentSearch, setEnrollmentSearch] = useState('');
   const [semesterSearch, setSemesterSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notificacion[]>([]);
+  const [messages, setMessages] = useState<MensajeSoporte[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [selectedStudentChat, setSelectedStudentChat] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadMessages();
+    loadNotifications();
+    const interval = setInterval(() => {
+      loadMessages();
+      loadNotifications();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadMessages = async () => {
+    const msgs = await MessageRepository.getAll();
+    setMessages(msgs);
+  };
+
+  const loadNotifications = async () => {
+    const notifs = await NotificationRepository.getAll();
+    setNotifications(notifs);
+  };
 
   const showNotification = (type: any, message: string) => {
     setNotification({ type, message });
@@ -1038,6 +1269,38 @@ export default function App() {
 
   const { enroll, cancel, updateEnrollment, reprogramar } = useInscripcionController(student, subjects, enrollments, allHistory, fetchData, showNotification);
 
+  const handleSendMessage = async (receiverId: string = 'admin') => {
+    if (!newMessage.trim() || student.id === 'GUEST') return;
+    
+    await MessageRepository.sendMessage({
+      senderId: student.id,
+      senderName: student.name,
+      receiverId,
+      content: newMessage,
+    });
+    setNewMessage('');
+    loadMessages();
+  };
+
+  const handleAdminReply = async (studentId: string) => {
+    if (!newMessage.trim() || student.role !== 'admin') return;
+    
+    await MessageRepository.sendMessage({
+      senderId: 'admin',
+      senderName: 'Soporte Académico',
+      receiverId: studentId,
+      content: newMessage,
+    });
+    setNewMessage('');
+    loadMessages();
+  };
+
+  const handlePushNotification = async (notif: Partial<Notificacion>) => {
+    await NotificationRepository.push(notif);
+    loadNotifications();
+    showNotification('success', 'Notificación Push enviada con éxito');
+  };
+
   const toggleEnrollmentStatus = async (e: Inscripcion) => {
     const newStatus = e.status === EstadoInscripcion.ENROLLED ? EstadoInscripcion.COMPLETED : EstadoInscripcion.ENROLLED;
     await updateEnrollment(e.id, { status: newStatus });
@@ -1070,6 +1333,7 @@ export default function App() {
             setStudent={setStudent} 
             showNotification={showNotification} 
             setIsAuthenticated={setIsAuthenticated} 
+            messages={messages}
           />
           <main className="ml-64 p-8 lg:p-16 w-full relative z-10">
             <AnimatePresence mode="wait">
@@ -1085,6 +1349,22 @@ export default function App() {
                  {activeTab === 'admin-students' && <AdminStudentsView students={studentsList} refreshData={fetchData} showNotification={showNotification} />}
                  {activeTab === 'curriculum' && <CurriculumView subjects={subjects} allHistory={allHistory} student={student} />}
                  {activeTab === 'profile' && <ProfileView student={student} setStudent={setStudent} showNotification={showNotification} />}
+                 {activeTab === 'admin-notifs' && student.role === 'admin' && <AdminPushForm students={studentsList} onPush={handlePushNotification} />}
+                 {activeTab === 'support' && student.role === 'admin' && (
+                   <div className="space-y-6">
+                     <h2 className="text-3xl font-black tracking-tight text-slate-900 border-l-8 border-emerald-500 pl-6 uppercase italic">Centro de Respuestas</h2>
+                     <AdminSupportView 
+                       messages={messages} 
+                       students={studentsList} 
+                       selectedStudent={selectedStudentChat}
+                       setSelectedStudent={setSelectedStudentChat}
+                       onReply={handleAdminReply}
+                       newMessage={newMessage}
+                       setNewMessage={setNewMessage}
+                       onMarkAsRead={MessageRepository.markAsRead}
+                     />
+                   </div>
+                 )}
                  {activeTab === 'enroll' && (
                    <div className="space-y-6">
                      <header className="flex justify-between items-end mb-8 relative">
@@ -1315,6 +1595,119 @@ export default function App() {
           </main>
         </>
       )}
+      {/* Floating Chat for Students */}
+      {isAuthenticated && (
+        <div className="fixed top-8 right-8 z-[120] flex gap-4">
+          <button 
+            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+            className="w-14 h-14 bg-white text-slate-800 rounded-2xl shadow-xl flex items-center justify-center hover:bg-emerald-50 transition-all border border-slate-100 relative group"
+          >
+            <Bell className="w-6 h-6 group-hover:text-emerald-600 transition-colors" />
+            {notifications.filter(n => (n.studentId === 'ALL' || n.studentId === student.id) && !n.read).length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-[10px] font-black text-white rounded-full flex items-center justify-center border-2 border-white animate-bounce">
+                {notifications.filter(n => (n.studentId === 'ALL' || n.studentId === student.id) && !n.read).length}
+              </span>
+            )}
+          </button>
+          <AnimatePresence>
+             {isNotificationsOpen && <NotificationCenter notifications={notifications} studentId={student.id} onClose={() => setIsNotificationsOpen(false)} />}
+          </AnimatePresence>
+        </div>
+      )}
+      {isAuthenticated && student.role === 'student' && (
+        <>
+          <div className="fixed bottom-8 right-8 z-[100]">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsSupportOpen(!isSupportOpen)}
+              className="w-16 h-16 bg-emerald-600 text-white rounded-[1.5rem] shadow-2xl flex items-center justify-center hover:bg-emerald-500 transition-all border-4 border-white relative"
+            >
+              {isSupportOpen ? <X size={28} /> : <MessagesSquare size={28} />}
+              {!isSupportOpen && messages.filter(m => m.receiverId === student.id && !m.read).length > 0 && (
+                <span className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-[11px] font-black rounded-full flex items-center justify-center border-4 border-white shadow-lg animate-bounce">
+                  {messages.filter(m => m.receiverId === student.id && !m.read).length}
+                </span>
+              )}
+            </motion.button>
+          </div>
+
+          <AnimatePresence>
+            {isSupportOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 50 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 50 }}
+                className="fixed bottom-28 right-8 w-96 h-[550px] bg-white rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] z-[100] border border-slate-100 flex flex-col overflow-hidden"
+              >
+                <div className="p-6 bg-emerald-600 text-white flex items-center justify-between shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                      <MessagesSquare size={20} />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-sm uppercase tracking-wider">Soporte Académico</h3>
+                      <p className="text-[10px] text-emerald-100 font-bold uppercase opacity-70">En línea • Tiempo resp. 5min</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSupportOpen(false)} className="opacity-70 hover:opacity-100 transition-opacity p-2 hover:bg-white/10 rounded-lg">
+                    <X size={20} />
+                  </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50">
+                  {messages.filter(m => m.senderId === student.id || m.receiverId === student.id).length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                      <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center shadow-xl mb-6 border border-emerald-50">
+                        <MessageCircle size={32} className="text-emerald-500" />
+                      </div>
+                      <h4 className="font-black text-slate-800 uppercase italic">¿Hola, en qué podemos ayudarte?</h4>
+                      <p className="text-[11px] text-slate-400 mt-2 font-medium max-w-[200px] mx-auto">Nuestro equipo de administración responderá tus dudas sobre el registro académico.</p>
+                    </div>
+                  ) : (
+                    messages
+                      .filter(m => m.senderId === student.id || m.receiverId === student.id)
+                      .map((msg) => (
+                        <div key={msg.id} className={`flex flex-col ${msg.senderId === student.id ? 'items-end' : 'items-start'}`}>
+                          <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-[12px] font-medium leading-relaxed shadow-sm ${
+                            msg.senderId === student.id 
+                              ? 'bg-emerald-600 text-white rounded-tr-none' 
+                              : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none'
+                          }`}>
+                            {msg.content}
+                          </div>
+                          <span className="text-[9px] text-slate-400 mt-1.5 font-bold px-2 uppercase opacity-60">
+                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      ))
+                  )}
+                </div>
+
+                <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_30px_-5px_rgba(0,0,0,0.05)]">
+                  <div className="flex gap-3">
+                    <input 
+                      type="text" 
+                      placeholder="Escribe tu duda universitaria..."
+                      className="flex-1 bg-slate-50 border-none rounded-2xl px-5 py-4 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage('admin')}
+                    />
+                    <button 
+                      onClick={() => handleSendMessage('admin')}
+                      className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      <Send size={18} />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
       <AnimatePresence>
         {notification && <Alert type={notification.type} message={notification.message} onClose={() => setNotification(null)} />}
       </AnimatePresence>

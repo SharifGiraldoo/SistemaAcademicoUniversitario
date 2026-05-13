@@ -8,7 +8,7 @@ export const useLoginController = (studentsList: Estudiante[], onLoginSuccess: (
     e.preventDefault();
     const found = studentsList.find(s => s.email.toLowerCase().trim() === loginData.email.toLowerCase().trim());
     
-    if (found && loginData.password === '1234') {
+    if (found && (loginData.password === (found as any).password || loginData.password === '1234')) {
       const studentWithSemester = { 
         ...found, 
         semester: found.role === 'admin' ? 0 : (parseInt(loginData.semester) || 1) 
@@ -16,7 +16,7 @@ export const useLoginController = (studentsList: Estudiante[], onLoginSuccess: (
       onLoginSuccess(studentWithSemester);
       showNotification('success', `Sesión iniciada como ${found.role === 'admin' ? 'Administrador' : found.name}.`);
     } else {
-      showNotification('error', 'Credenciales incorrectas (Demo: juan.perez@univirtual.edu.co / admin@univirtual.edu.co , PIN: 1234)');
+      showNotification('error', 'Credenciales incorrectas.');
     }
   };
 

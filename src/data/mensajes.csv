@@ -1,0 +1,2 @@
+id,senderId,senderName,receiverId,content,timestamp,read
+MSG-001,STU-101,Juan Pérez,admin,Tengo una duda con los créditos de Cálculo,2024-05-13T10:00:00Z,false

@@ -6,4 +6,13 @@ export class EstudianteRepository {
     const data = await res.json();
     return data.students;
   }
+
+  static async createAsAdmin(student: Partial<Estudiante>): Promise<boolean> {
+    const res = await fetch('/api/admin/create-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ student })
+    });
+    return res.ok;
+  }
 }

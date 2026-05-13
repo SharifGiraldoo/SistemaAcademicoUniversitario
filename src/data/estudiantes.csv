@@ -1,0 +1,22 @@
+id,name,email,status,maxCredits,avatarUrl,role,password
+ADM-001,Administrador Central,admin@univirtual.edu.co,ACTIVO,0,https://images.unsplash.com/photo-1519085360753-af0119f7cbe7,admin,1234
+STU-101,Juan Pérez,juan.perez@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1535713875002-d1d0cf377fde,student,1234
+STU-102,Maria Garcia,maria.garcia@univirtual.edu.co,INACTIVO,22,https://images.unsplash.com/photo-1494790108377-be9c29b29330,student,1234
+STU-103,Carlos Rodriguez,carlos.rodriguez@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1599566150163-29194dcaad36,student,1234
+STU-104,Ana Martinez,ana.martinez@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1438761681033-6461ffad8d80,student,1234
+STU-105,Luis Hernandez,luis.hernandez@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1472099645785-5658abf4ff4e,student,1234
+STU-106,Elena Gomez,elena.gomez@univirtual.edu.co,ACTIVO,18,https://images.unsplash.com/photo-1544005313-94ddf0286df2,student,1234
+STU-107,Pedro Sanchez,pedro.sanchez@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1500648767791-00dcc994a43e,student,1234
+STU-108,Sofia Diaz,sofia.diaz@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1554151228-14d9def656e4,student,1234
+STU-109,Jorge Torres,jorge.torres@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d,student,1234
+STU-110,Lucia Ruíz,lucia.ruiz@univirtual.edu.co,ACTIVO,18,https://images.unsplash.com/photo-1544717297-fa154da09f51,student,1234
+STU-111,Ricardo Alba,ricardo.alba@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1633332755192-727a05c4013d,student,1234
+STU-112,Marta Lopez,marta.lopez@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1573496359142-b8d87734a5a2,student,1234
+STU-113,Fernando Castro,fernando.castro@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1506794778202-cad84cf45f1d,student,1234
+STU-114,Isabel Morales,isabel.morales@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1494790108377-be9c29b29330,student,1234
+STU-115,Mateo Vargas,mateo.vargas@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1527980965255-d3b416303d12,student,1234
+STU-116,Valentina Herrera,valentina.herrera@univirtual.edu.co,ACTIVO,18,https://images.unsplash.com/photo-1438761681033-6461ffad8d80,student,1234
+STU-117,Sebastian Mendoza,sebastian.mendoza@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1500648767791-00dcc994a43e,student,1234
+STU-118,Camila Salazar,camila.salazar@univirtual.edu.co,ACTIVO,20,https://images.unsplash.com/photo-1554151228-14d9def656e4,student,1234
+STU-119,Andres Rios,andres.rios@univirtual.edu.co,ACTIVO,22,https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d,student,1234
+STU-120,Gabriela Ortiz,gabriela.ortiz@univirtual.edu.co,ACTIVO,18,https://images.unsplash.com/photo-1544717297-fa154da09f51,student,1234
