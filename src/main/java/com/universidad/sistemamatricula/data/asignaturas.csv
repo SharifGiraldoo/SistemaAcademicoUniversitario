@@ -1,0 +1,61 @@
+code,name,credits,prerequisites,schedule,capacity,enrolledCount,semester
+MG101,Matemáticas Generales,2,,Lunes 08:00 - 10:00,30,20,1
+IISC101,Introducción a la Ing. de Sistemas y Computación,3,,Miércoles 08:00 - 10:00,40,35,1
+UQ101,Uniquindianidad,2,,Jueves 14:00 - 16:00,50,45,1
+LP101,Lógica de Programación,3,,Viernes 10:00 - 12:00,30,25,1
+LEI101,Lectura y Escritura en Ingeniería,2,,Lunes 14:00 - 16:00,25,15,1
+CD102,Cálculo Diferencial,4,MG101,Martes 08:00 - 10:00,30,28,2
+AL102,Algebra Lineal,3,MG101,Miércoles 10:00 - 12:00,25,20,2
+P102,Programación I,3,LP101,Jueves 08:00 - 10:00,25,21,2
+PS102,Pensamiento Sistémico,3,,Viernes 14:00 - 16:00,30,11,2
+FEET102,Fundamentos de Electricidad Electrónica y Telecomunicaciones,3,,Lunes 10:00 - 12:00,25,18,2
+CI103,Cálculo Integral,4,CD102,Miércoles 14:00 - 16:00,30,27,3
+FG103,Física General,4,CD102,Martes 14:00 - 16:00,25,22,3
+MD103,Matemáticas Discretas,3,,Jueves 10:00 - 12:00,30,16,3
+P103,Programación II,3,P102,Lunes 16:00 - 18:00,25,20,3
+TDO103,Teoría y Diseño Organizacional,3,PS102,Viernes 08:00 - 10:00,25,13,3
+CMV104,Cálculo Multivariado y Vectorial,4,CI103,Martes 16:00 - 18:00,25,15,4
+ED104,Ecuaciones Diferenciales,3,CI103,Miércoles 16:00 - 18:00,25,10,4
+SL104,Segunda Lengua I,2,,Jueves 16:00 - 18:00,20,18,4
+P104,Programación III,3,P103,Viernes 16:00 - 18:00,25,20,4
+SI104,Sistemas de Información,3,,Lunes 08:00 - 10:00,30,22,4
+FIC104,Fundamentos de Infraestructura Computacional,3,,Martes 10:00 - 12:00,25,15,4
+EP105,Estadística y Probabilidad,3,CD102,Miércoles 08:00 - 10:00,30,25,5
+TG105,Teoría de Grafos,3,MD103,Jueves 14:00 - 16:00,25,10,5
+SL105,Segunda Lengua II,2,SL104,Viernes 10:00 - 12:00,20,15,5
+EDD105,Estructura de Datos,3,P104,Martes 14:00 - 16:00,25,22,5
+ISW105,Ingeniería de Software I,3,P104,Lunes 10:00 - 12:00,25,20,5
+IC105,Infraestructura Computacional,4,FIC104,Miércoles 10:00 - 12:00,25,18,5
+DETI106,Dirección Estratégica de TI,3,,Jueves 08:00 - 10:00,30,15,6
+AN106,Análisis Numérico,3,CMV104,Jueves 10:00 - 12:00,25,15,6
+BD106,Bases de Datos I,3,EDD105,Miércoles 14:00 - 16:00,30,25,6
+PA106,Programación Avanzada,3,EDD105,Martes 16:00 - 18:00,25,18,6
+ISW106,Ingeniería de Software II,3,ISW105,Lunes 14:00 - 16:00,25,20,6
+IC106,Infraestructura de Comunicaciones,4,IC105,Viernes 14:00 - 16:00,25,12,6
+IE107,Ingeniería Económica,3,,Jueves 16:00 - 18:00,30,22,7
+HCI107,Fundamentos de HCI,3,,Miércoles 16:00 - 18:00,25,20,7
+SI107,Seminario de Investigación,3,,Martes 08:00 - 10:00,20,15,7
+BD107,Bases de Datos II,3,BD106,Lunes 16:00 - 18:00,25,12,7
+ISW107,Ingeniería de Software III,3,ISW106,Viernes 08:00 - 10:00,25,10,7
+AIDT107,Administración de Infraestructura de TI,3,IC106,Viernes 10:00 - 12:00,25,18,7
+FEP108,Formulación y Evaluación de Proyectos,2,IE107,Viernes 14:00 - 16:00,30,25,8
+TLF108,Teoría de Lenguajes Formales,3,,Jueves 14:00 - 16:00,25,15,8
+AA108,Análisis de Algoritmos,3,EDD105,Miércoles 08:00 - 10:00,25,20,8
+PI108,Profundización I,3,,Martes 10:00 - 12:00,20,12,8
+PII108,Profundización II,3,,Lunes 08:00 - 10:00,20,10,8
+SI108,Seminario de Ingeniería,2,,Lunes 10:00 - 12:00,25,20,8
+AP109,Administración de Proyectos,2,FEP108,Martes 08:00 - 10:00,25,18,9
+IA109,Inteligencia Artificial,3,,Viernes 08:00 - 10:00,25,22,9
+LLPI109,Legislación Laboral y Propiedad Intelectual,2,,Jueves 10:00 - 12:00,30,28,9
+PIII109,Profundización III,3,,Miércoles 10:00 - 12:00,20,12,9
+PIV109,Profundización IV,3,,Lunes 14:00 - 16:00,20,10,9
+ADM109,Administración,2,,Martes 14:00 - 16:00,30,25,9
+TG110,Trabajo de Grado,6,SI107,Miércoles 14:00 - 16:00,10,5,10
+ETP110,Ética Profesional,2,,Lunes 16:00 - 18:00,40,30,10
+EFP101,Electiva de Formación Personal I,2,,Martes 10:00 - 12:00,25,10,1
+EFP102,Electiva de Formación Personal II,2,EFP101,Jueves 16:00 - 18:00,25,15,2
+EFP103,Electiva de Formación Personal III,2,EFP102,Viernes 16:00 - 18:00,25,12,3
+CM110,Cátedra Multidisciplinar,0,,Martes 16:00 - 18:00,100,50,10
+FULL101,Materia Sin Cupos,3,,Viernes 08:00 - 10:00,10,10,1
+CRIT101,Materia Pesada,10,,Lunes 12:00 - 14:00,20,5,1
+MISS101,Sin Prerrequisito Cumplido,3,MISS999,Martes 12:00 - 14:00,20,0,1

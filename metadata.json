@@ -1,0 +1,6 @@
+{
+  "name": "AcademiaSync - Gestión de Matrícula",
+  "description": "Sistema de gestión de matrícula académica con validaciones de reglas de negocio, historial académico y procesos de inscripción.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
