@@ -1400,7 +1400,10 @@ export default function App() {
                         </div>
                      </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                       {subjects.filter(s => (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.code.toLowerCase().includes(searchTerm.toLowerCase())) && (semesterSearch === '' || s.semester.toString() === semesterSearch)).map((s, idx) => (
+                       {subjects.filter(s => 
+                         (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.code.toLowerCase().includes(searchTerm.toLowerCase())) && 
+                         (semesterSearch === '' ? s.semester <= (student.role === 'admin' ? 10 : student.semester) : s.semester.toString() === semesterSearch)
+                       ).map((s, idx) => (
                          <Card key={s.code} delay={idx * 0.05} className="p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-500 relative overflow-hidden bg-white/90">
                             <div className="absolute top-0 right-0 w-24 h-24 green-gradient opacity-10 rounded-full translate-x-12 -translate-y-12 blur-2xl group-hover:scale-150 transition-transform" />
                             <div>

@@ -35,9 +35,9 @@ export class InscripcionService {
       return Constants.ALREADY_APPROVED_MESSAGE;
     }
 
-    // RN-007: Semestre superior (No más de 2 semestres adelante del actual)
-    if (estudiante.semester && asignatura.semester > estudiante.semester + 1) {
-       return Constants.RN_007_MESSAGE;
+    // RN-007: Semestre superior (Solo hasta el semestre actual del estudiante)
+    if (estudiante.semester && asignatura.semester > estudiante.semester) {
+       return "No puedes inscribir materias de semestres superiores al actual.";
     }
 
     // Prerrequisitos
