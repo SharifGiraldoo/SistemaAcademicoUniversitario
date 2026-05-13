@@ -46,8 +46,10 @@ Modulo exclusivo para el rol `admin` donde se centraliza la información de los 
 - **Iconografía**: Lucide-React.
 
 ## 📐 Trazabilidad
-El código sigue una estructura de capas:
-- `model/`: Definición de interfaces y tipos de datos.
-- `controller/`: Lógica de negocio y manejo de eventos.
-- `persistence/`: Repositorios y comunicación con la API (CSV).
-- `view/`: Componentes UI integrados en `App.tsx`.
+El código sigue una estructura de capas moderna en `/src`:
+- `models/`: Definición de interfaces y tipos de datos.
+- `controllers/`: Lógica de componentes y manejo de eventos.
+- `persistence/`: Repositorios y comunicación con la API (Fetch).
+- `services/`: Reglas de negocio puras.
+- `data/`: Almacenamiento local en archivos CSV.
+- `App.tsx`: Vista principal y enrutamiento.

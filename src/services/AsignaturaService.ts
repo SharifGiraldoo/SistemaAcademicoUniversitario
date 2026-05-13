@@ -1,6 +1,6 @@
-import { Asignatura } from '../model/Asignatura';
-import { HistorialAcademico } from '../model/HistorialAcademico';
-import { EstadoInscripcion } from '../model/enums/EstadoInscripcion';
+import { Asignatura } from '../models/Asignatura';
+import { HistorialAcademico } from '../models/HistorialAcademico';
+import { EstadoInscripcion } from '../models/enums/EstadoInscripcion';
 
 export class AsignaturaService {
   static hasPrerequisites(asignatura: Asignatura, history: HistorialAcademico[]): { met: boolean, missing: string[] } {

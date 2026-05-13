@@ -1,9 +1,9 @@
-import { Estudiante } from '../model/Estudiante';
-import { Asignatura } from '../model/Asignatura';
-import { Inscripcion } from '../model/Inscripcion';
-import { HistorialAcademico } from '../model/HistorialAcademico';
-import { EstadoInscripcion } from '../model/enums/EstadoInscripcion';
-import { InscripcionService } from '../service/InscripcionService';
+import { Estudiante } from '../models/Estudiante';
+import { Asignatura } from '../models/Asignatura';
+import { Inscripcion } from '../models/Inscripcion';
+import { HistorialAcademico } from '../models/HistorialAcademico';
+import { EstadoInscripcion } from '../models/enums/EstadoInscripcion';
+import { InscripcionService } from '../services/InscripcionService';
 import { InscripcionRepository } from '../persistence/InscripcionRepository';
 
 export const useInscripcionController = (

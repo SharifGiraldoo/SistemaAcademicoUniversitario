@@ -1,4 +1,4 @@
-import { EstadoEstudiante } from '../model/enums/EstadoEstudiante';
+import { EstadoEstudiante } from '../models/enums/EstadoEstudiante';
 
 export const RN_001_MESSAGE = "RN-001 VIOLADA: Estudiante NO ACTIVO. Matrícula bloqueada.";
 export const RN_002_MESSAGE = "RN-002 VIOLADA: Asignatura sin cupos disponibles.";

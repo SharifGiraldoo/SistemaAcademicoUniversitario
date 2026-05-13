@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Estudiante } from '../model/Estudiante';
+import { Estudiante } from '../models/Estudiante';
 
 export const useLoginController = (studentsList: Estudiante[], onLoginSuccess: (student: Estudiante) => void, showNotification: (type: any, msg: string) => void) => {
   const [loginData, setLoginData] = useState({ email: '', password: '', semester: '' });

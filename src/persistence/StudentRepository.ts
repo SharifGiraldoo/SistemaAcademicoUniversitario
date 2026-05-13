@@ -1,4 +1,4 @@
-import { Estudiante } from "../model/Estudiante";
+import { Estudiante } from "../models/Estudiante";
 
 export class StudentRepository {
   static async update(id: string, student: Partial<Estudiante>): Promise<boolean> {

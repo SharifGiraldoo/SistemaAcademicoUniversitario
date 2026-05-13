@@ -1,5 +1,5 @@
-import { Estudiante } from '../model/Estudiante';
-import { EstadoEstudiante } from '../model/enums/EstadoEstudiante';
+import { Estudiante } from '../models/Estudiante';
+import { EstadoEstudiante } from '../models/enums/EstadoEstudiante';
 
 export class EstudianteService {
   static isActivo(estudiante: Estudiante): boolean {

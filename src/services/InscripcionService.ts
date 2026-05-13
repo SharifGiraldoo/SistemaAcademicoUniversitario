@@ -1,10 +1,10 @@
-import { Estudiante } from '../model/Estudiante';
-import { Asignatura } from '../model/Asignatura';
-import { Inscripcion } from '../model/Inscripcion';
-import { HistorialAcademico } from '../model/HistorialAcademico';
-import { EstadoEstudiante } from '../model/enums/EstadoEstudiante';
-import { EstadoInscripcion } from '../model/enums/EstadoInscripcion';
-import * as Constants from '../util/Constants';
+import { Estudiante } from '../models/Estudiante';
+import { Asignatura } from '../models/Asignatura';
+import { Inscripcion } from '../models/Inscripcion';
+import { HistorialAcademico } from '../models/HistorialAcademico';
+import { EstadoEstudiante } from '../models/enums/EstadoEstudiante';
+import { EstadoInscripcion } from '../models/enums/EstadoInscripcion';
+import * as Constants from '../utils/Constants';
 
 export class InscripcionService {
   static validate(

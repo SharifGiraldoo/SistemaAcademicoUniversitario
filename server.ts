@@ -10,7 +10,7 @@ const PORT = 3000;
 
 app.use(express.json());
 
-const DATA_DIR = path.join(process.cwd(), "src/main/java/com/universidad/sistemamatricula/data");
+const DATA_DIR = path.join(process.cwd(), "src/data");
 
 // Helper to read CSV
 function readCSV<T>(filename: string): T[] {

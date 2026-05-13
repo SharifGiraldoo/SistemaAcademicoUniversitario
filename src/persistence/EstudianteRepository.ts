@@ -1,4 +1,4 @@
-import { Estudiante } from '../model/Estudiante';
+import { Estudiante } from '../models/Estudiante';
 
 export class EstudianteRepository {
   static async getAll(): Promise<Estudiante[]> {

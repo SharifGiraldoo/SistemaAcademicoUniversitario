@@ -1,7 +1,7 @@
-import { Asignatura } from '../model/Asignatura';
-import { Estudiante } from '../model/Estudiante';
-import { Inscripcion } from '../model/Inscripcion';
-import { HistorialAcademico } from '../model/HistorialAcademico';
+import { Asignatura } from '../models/Asignatura';
+import { Estudiante } from '../models/Estudiante';
+import { Inscripcion } from '../models/Inscripcion';
+import { HistorialAcademico } from '../models/HistorialAcademico';
 
 /**
  * Persistencia en el cliente mediante Fetch a los Endpoints del Servidor CSV
