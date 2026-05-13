@@ -1,4 +1,4 @@
-# AcademiaSync - Sistema de Gestión Académica
+# AcademiaSync v2.0 - Sistema de Gestión Académica
 
 **AcademiaSync** es una plataforma integral diseñada para la automatización y optimización del proceso de matrícula académica de la Universidad del Quindío. El sistema permite a estudiantes y administrativos gestionar la oferta académica, inscripciones, horarios y seguimiento crediticio en tiempo real.
 
@@ -62,7 +62,21 @@ El proyecto sigue una arquitectura modular y escalable organizada de la siguient
 
 ---
 
-## ⚖️ Reglas de Negocio 
+## ⚙️ Requisitos No Funcionales
+
+| Atributo | Descripción |
+|---|---|
+| **Disponibilidad** | La plataforma debe estar disponible 24/7 para que los estudiantes realicen sus trámites. |
+| **Tiempo de Respuesta** | Las validaciones de matrícula y actualizaciones de cupos deben ocurrir en menos de 500ms. |
+| **Seguridad** | Los datos de los estudiantes y sus registros académicos deben estar protegidos contra accesos no autorizados. |
+| **Usabilidad** | La interfaz debe ser intuitiva, con un tiempo de aprendizaje mínimo para los estudiantes nuevos. |
+| **Escalabilidad** | El sistema debe soportar picos de tráfico elevados durante el inicio de los periodos de matrícula académica. |
+| **Diseño Adaptable** | La aplicación es responsiva y funciona correctamente en dispositivos móviles, tablets y computadores de escritorio. |
+| **Interoperabilidad** | Arquitectura modular que permite la integración futura con sistemas de pago o bases de datos externas. |
+
+---
+
+## ⚖️ Reglas de Negocio (Business Rules)
 
 El sistema aplica estrictamente las siguientes validaciones:
 
