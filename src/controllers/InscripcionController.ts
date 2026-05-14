@@ -10,7 +10,7 @@
  *
  * @authors Sharif Giraldo Obando, Juan Sebastián Hernández y Santiago Ospina Sánchez
  * @date 2026-05-13
- * @lastModified 2025-11-16
+ * @lastModified 2026-05-13
  * @license MIT
  */
 
